@@ -14,11 +14,11 @@ secret_key = 'GFyYEzWvs0nXx73Sa9BvS7OHtTDfPhMyPxlUOyIE'
 
 session = boto3.session.Session()
 s3 = session.client(
-        service_name='s3',
-        endpoint_url='https://storage.yandexcloud.net',
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key,
-    )
+		service_name='s3',
+		endpoint_url='https://storage.yandexcloud.net',
+		aws_access_key_id=access_key,
+		aws_secret_access_key=secret_key,
+	)
 login_bas=1
 
 #
@@ -91,20 +91,18 @@ def stat_connekt():
 	while 1:
 
 		if root.geometry():
-
-
-			r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
-
-			scodet = r.status_code
-
-			if scodet == 200:
-				staaaatt['text'] = 'Связь с сервером есть!'
-				staaaatt['bg'] = 'green'
-
-			else:
+			try:
+				r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
+				scodet = r.status_code
+				if scodet == 200:
+					staaaatt['text'] = 'Связь с сервером есть!'
+					staaaatt['bg'] = 'green'
+				else:
+					staaaatt['text'] = 'Нет связи с сервером!'
+					staaaatt['bg'] = 'red'
+			except:
 				staaaatt['text'] = 'Нет связи с сервером!'
 				staaaatt['bg'] = 'red'
-
 
 
 			time.sleep(5)
@@ -142,20 +140,19 @@ n = ttk.Notebook(frame2)
 
 frame21 = tk.Frame(master=n,borderwidth=5)
 tree = ttk.Treeview(frame21)
-tree['columns'] = ('size', 'modified', 'owner')
-tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
+tree['columns'] = ('path')
+#tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
+
 tree.pack()
 frame21.place(relx=.5, rely=.5, anchor="c", height=300, width=400)
 
 frame22 = tk.Frame(master=n,borderwidth=5)
-tree = ttk.Treeview(frame22)
-tree['columns'] = ('size', 'modified', 'owner')
-tree.insert('', 'end', text='Lis3tbox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='List3ox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='Li3stbox', values=('15KB', 'Yesterday', 'mark'))
-tree.pack()
+treec = ttk.Treeview(frame22)
+treec['columns'] = ('path')
+treec.insert('', 'end', text='Lis3tbox', values=('15KB', 'Yesterday', 'mark'))
+treec.insert('', 'end', text='List3ox', values=('15KB', 'Yesterday', 'mark'))
+treec.insert('', 'end', text='Li3stbox', values=('15KB', 'Yesterday', 'mark'))
+treec.pack()
 frame22.pack()
 
 n.add(frame21, text='Локально')
