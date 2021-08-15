@@ -25,10 +25,29 @@ def save_settings():
 	with open("settings.json", 'w') as set_prog_f:
 		set_prog_f.write(json.dumps(settings))
 
+def add_tree_l(rec):
+	if 1:
+
+		nbgb = ''
+		under = ''
+		for litera in rec:
+			if litera == '/':
+				under = nbgb + '/'
+				nbgb = ''
+			else:
+				nbgb = nbgb + litera
+		if nbgb:
+			kjkj  = nbgb
+		else:
+			kjkj = under
+		tree.insert('', 'end', text=kjkj, values=(rec))
+
 #
 def add_f():
 	if login_bas:
 		print('add_f')
+	filename = filedialog.askopenfilename()
+	add_tree_l(filename)
 
 #
 def rem_f():
