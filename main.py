@@ -8,18 +8,22 @@ from tkinter import filedialog
 import time
 from threading import Thread
 import requests as rq
-os.environ['AWS_DEFAULT_REGION'] = 'Russia'
-access_key = 'r0ejPWnsow_aWG5HkJPw'
-secret_key = 'GFyYEzWvs0nXx73Sa9BvS7OHtTDfPhMyPxlUOyIE'
+import json
 
-session = boto3.session.Session()
-s3 = session.client(
-		service_name='s3',
-		endpoint_url='https://storage.yandexcloud.net',
-		aws_access_key_id=access_key,
-		aws_secret_access_key=secret_key,
-	)
 login_bas=1
+
+#losd settings
+settings = {}
+with open("settings.json", 'r') as set_prog_f:
+	try:
+		settings = json.loads(set_prog_f.read())
+	except:
+		save_settings()
+
+#
+def save_settings():
+	with open("settings.json", 'w') as set_prog_f:
+		set_prog_f.write(json.dumps(settings))
 
 #
 def add_f():
