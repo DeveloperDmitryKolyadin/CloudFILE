@@ -81,7 +81,7 @@ def an_auth():
 		print('an_auth')
 
 #
-def settings():
+def settings_p():
 	if login_bas:
 		print('settings')
 
@@ -144,8 +144,21 @@ n = ttk.Notebook(frame2)
 
 frame21 = tk.Frame(master=n,borderwidth=5)
 tree = ttk.Treeview(frame21)
-tree['columns'] = ('path')
-#tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
+tree['columns'] = ('Путь')
+for rec in settings['recent_use']:
+	nbgb = ''
+	under = ''
+	for litera in rec:
+		if litera == '/':
+			under = nbgb + '/'
+			nbgb = ''
+		else:
+			nbgb = nbgb + litera
+	if nbgb:
+		kjkj  = nbgb
+	else:
+		kjkj = under
+	tree.insert('', 'end', text=kjkj, values=(rec))
 
 tree.pack()
 frame21.place(relx=.5, rely=.5, anchor="c", height=300, width=400)
@@ -153,9 +166,8 @@ frame21.place(relx=.5, rely=.5, anchor="c", height=300, width=400)
 frame22 = tk.Frame(master=n,borderwidth=5)
 treec = ttk.Treeview(frame22)
 treec['columns'] = ('path')
-treec.insert('', 'end', text='Lis3tbox', values=('15KB', 'Yesterday', 'mark'))
-treec.insert('', 'end', text='List3ox', values=('15KB', 'Yesterday', 'mark'))
-treec.insert('', 'end', text='Li3stbox', values=('15KB', 'Yesterday', 'mark'))
+#treec.insert('', 'end', text='Lis3tbox', values=('15KB', 'Yesterday', 'mark'))
+
 treec.pack()
 frame22.pack()
 
