@@ -1,5 +1,5 @@
 import boto3
-import os
+import os, sys
 from tkinter import *
 import tkinter as tk
 import codecs
@@ -11,7 +11,7 @@ import requests as rq
 import json
 
 login_bas=1
-
+break_app = 0
 def save_settings():
 	with open("settings.json", 'w') as set_prog_f:
 		set_prog_f.write(json.dumps(settings))
@@ -125,13 +125,19 @@ def settings_p():
 		print('settings')
 
 #
+def obrtka(f_ober):
+	try:
+		f_ober()
+	except:
+		pass
+
+#
 def stat_connekt():
 	staaaatt['text'] = 'Подключение к серверу!'
 	staaaatt['bg'] = 'yellow'
 	time.sleep(5)
 	while 1:
-
-		if root.geometry():
+		try:
 			try:
 				r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
 				scodet = r.status_code
@@ -144,9 +150,11 @@ def stat_connekt():
 			except:
 				staaaatt['text'] = 'Нет связи с сервером!'
 				staaaatt['bg'] = 'red'
-
-
 			time.sleep(5)
+		except:
+			break
+
+
 
 #
 def SAVE():
@@ -159,6 +167,10 @@ def tree_selection(event):
 		item_select = selection
 		#print(tree.item(item_select)['text'])
 
+def close_app():
+	save_settings()
+	root.destroy()
+	sys.exit(1)
 
 root = tk.Tk()
 root.geometry("500x500")
@@ -250,8 +262,9 @@ frame4.pack(fill=tk.X)
 
 
 time.sleep(1)
-Thread(target=stat_connekt).start()
 
+Thread(target = lambda: obrtka(stat_connekt)).start()
 
+root.protocol("WM_DELETE_WINDOW", close_app)
 
 root.mainloop()
