@@ -8,28 +8,60 @@ from tkinter import filedialog
 import time
 from threading import Thread
 import requests as rq
-os.environ['AWS_DEFAULT_REGION'] = 'Russia'
-access_key = 'r0ejPWnsow_aWG5HkJPw'
-secret_key = 'GFyYEzWvs0nXx73Sa9BvS7OHtTDfPhMyPxlUOyIE'
+import json
 
-session = boto3.session.Session()
-s3 = session.client(
-        service_name='s3',
-        endpoint_url='https://storage.yandexcloud.net',
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key,
-    )
 login_bas=1
+
+#losd settings
+settings = {"recent_use": []}
+with open("settings.json", 'r') as set_prog_f:
+	try:
+		settings = json.loads(set_prog_f.read())
+	except:
+		save_settings()
+
+#
+def save_settings():
+	with open("settings.json", 'w') as set_prog_f:
+		set_prog_f.write(json.dumps(settings))
+
+def add_tree_l(rec):
+	if 1:
+
+		settings['recent_use'].append(rec)
+		save_settings()
+		nbgb = ''
+		under = ''
+		for litera in rec:
+			if litera == '/':
+				under = nbgb + '/'
+				nbgb = ''
+			else:
+				nbgb = nbgb + litera
+		if nbgb:
+			kjkj  = nbgb
+		else:
+			kjkj = under
+		rtee.append(tree.insert('', 'end', text=kjkj, values=(rec)))
+
 
 #
 def add_f():
 	if login_bas:
 		print('add_f')
+	filename = filedialog.askopenfilename()
+
+	add_tree_l(filename)
 
 #
 def rem_f():
 	if login_bas:
 		print('rem_f')
+	global item_select
+	settings['recent_use'].remove(tree.item(item_select)['values'][0])
+	tree.delete(item_select)
+	save_settings()
+
 
 #
 def rename_f():
@@ -77,7 +109,7 @@ def an_auth():
 		print('an_auth')
 
 #
-def settings():
+def settings_p():
 	if login_bas:
 		print('settings')
 
@@ -91,20 +123,18 @@ def stat_connekt():
 	while 1:
 
 		if root.geometry():
-
-
-			r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
-
-			scodet = r.status_code
-
-			if scodet == 200:
-				staaaatt['text'] = 'Связь с сервером есть!'
-				staaaatt['bg'] = 'green'
-
-			else:
+			try:
+				r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
+				scodet = r.status_code
+				if scodet == 200:
+					staaaatt['text'] = 'Связь с сервером есть!'
+					staaaatt['bg'] = 'green'
+				else:
+					staaaatt['text'] = 'Нет связи с сервером!'
+					staaaatt['bg'] = 'red'
+			except:
 				staaaatt['text'] = 'Нет связи с сервером!'
 				staaaatt['bg'] = 'red'
-
 
 
 			time.sleep(5)
@@ -114,17 +144,18 @@ def stat_connekt():
 def SAVE():
 	pass
 
-
-
-
-
+item_select = 0
+def tree_selection(event):
+	for selection in tree.selection():
+		global item_select
+		item_select = selection
+		#print(tree.item(item_select)['text'])
 
 
 root = tk.Tk()
 root.geometry("500x500")
-
 root.title('CloudFILE')
-#filename = filedialog.askopenfilename()
+
 
 #f1
 frame1 = tk.Frame(master=root,borderwidth=5)
@@ -142,20 +173,33 @@ n = ttk.Notebook(frame2)
 
 frame21 = tk.Frame(master=n,borderwidth=5)
 tree = ttk.Treeview(frame21)
-tree['columns'] = ('size', 'modified', 'owner')
-tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='Listbox', values=('15KB', 'Yesterday', 'mark'))
+tree['columns'] = ('Путь')
+
+rtee=[]
+for rec in settings['recent_use']:
+	nbgb = ''
+	under = ''
+	for litera in rec:
+		if litera == '/':
+			under = nbgb + '/'
+			nbgb = ''
+		else:
+			nbgb = nbgb + litera
+	if nbgb:
+		kjkj  = nbgb
+	else:
+		kjkj = under
+	rtee.append(tree.insert('', 'end', text=kjkj, values=(rec)))
+tree.bind("<<TreeviewSelect>>", tree_selection)
+
 tree.pack()
 frame21.place(relx=.5, rely=.5, anchor="c", height=300, width=400)
 
 frame22 = tk.Frame(master=n,borderwidth=5)
-tree = ttk.Treeview(frame22)
-tree['columns'] = ('size', 'modified', 'owner')
-tree.insert('', 'end', text='Lis3tbox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='List3ox', values=('15KB', 'Yesterday', 'mark'))
-tree.insert('', 'end', text='Li3stbox', values=('15KB', 'Yesterday', 'mark'))
-tree.pack()
+treec = ttk.Treeview(frame22)
+treec['columns'] = ('path')
+
+treec.pack()
 frame22.pack()
 
 n.add(frame21, text='Локально')
