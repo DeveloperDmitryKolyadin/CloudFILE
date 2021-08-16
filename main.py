@@ -12,18 +12,20 @@ import json
 
 login_bas=1
 
-#losd settings
-settings = {"recent_use": []}
-with open("settings.json", 'r') as set_prog_f:
-	try:
-		settings = json.loads(set_prog_f.read())
-	except:
-		save_settings()
-
-#
 def save_settings():
 	with open("settings.json", 'w') as set_prog_f:
 		set_prog_f.write(json.dumps(settings))
+
+
+#losd settings
+settings = {"recent_use": []}
+try:
+	with open("settings.json", 'r') as set_prog_f:
+		settings = json.loads(set_prog_f.read())
+except:
+	save_settings()
+
+#
 
 def add_tree_l(rec):
 	if 1:
