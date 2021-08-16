@@ -9,7 +9,7 @@ import time
 from threading import Thread
 import requests as rq
 import json
-
+from tkinter import messagebox
 login_bas=1
 break_app = 0
 def save_settings():
@@ -26,7 +26,6 @@ except:
 	save_settings()
 
 #
-
 def add_tree_l(rec):
 	if 1:
 
@@ -48,10 +47,18 @@ def add_tree_l(rec):
 		rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 
 #
+def  alert(msg_alert):
+	messagebox.showinfo(message=msg_alert)
+
+#
 def add_f():
 	if login_bas:
 		print('add_f')
 	filename = filedialog.askopenfilename()
+	for antempxz in settings['recent_use']:
+		if filename == antempxz:
+			alert('Этот файл уже добавлен!')
+			return 0
 
 	add_tree_l(filename)
 
@@ -258,13 +265,8 @@ tk.Button(frame4, text='НАСТРОЙКИ', command=settings ).pack(side=tk.RIG
 
 frame4.pack(fill=tk.X)
 
-
-
-
 time.sleep(1)
-
 Thread(target = lambda: obrtka(stat_connekt)).start()
 
 root.protocol("WM_DELETE_WINDOW", close_app)
-
 root.mainloop()
