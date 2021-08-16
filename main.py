@@ -38,12 +38,12 @@ def add_tree_l(rec):
 				nbgb = ''
 			else:
 				nbgb = nbgb + litera
+
 		if nbgb:
 			kjkj  = nbgb
 		else:
 			kjkj = under
-		rtee.append(tree.insert('', 'end', text=kjkj, values=(rec)))
-
+		rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 
 #
 def add_f():
@@ -58,10 +58,19 @@ def rem_f():
 	if login_bas:
 		print('rem_f')
 	global item_select
+	#print(tree.item(item_select)['values'][0].encode(encoding='UTF-8',errors='strict'))
 	settings['recent_use'].remove(tree.item(item_select)['values'][0])
 	tree.delete(item_select)
 	save_settings()
 
+def f_this_space(text_w_probel):
+	bez_probela = ''
+	for jkjkjk in text_w_probel:
+		if jkjkjk == ' ':
+			bez_probela= bez_probela + '\ '
+		else:
+			bez_probela = bez_probela + jkjkjk
+	return bez_probela
 
 #
 def rename_f():
@@ -113,8 +122,6 @@ def settings_p():
 	if login_bas:
 		print('settings')
 
-
-
 #
 def stat_connekt():
 	staaaatt['text'] = 'Подключение к серверу!'
@@ -138,7 +145,6 @@ def stat_connekt():
 
 
 			time.sleep(5)
-
 
 #
 def SAVE():
@@ -189,7 +195,7 @@ for rec in settings['recent_use']:
 		kjkj  = nbgb
 	else:
 		kjkj = under
-	rtee.append(tree.insert('', 'end', text=kjkj, values=(rec)))
+	rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 tree.bind("<<TreeviewSelect>>", tree_selection)
 
 tree.pack()
