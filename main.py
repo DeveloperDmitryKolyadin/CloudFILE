@@ -10,12 +10,13 @@ from threading import Thread
 import requests as rq
 import json
 from tkinter import messagebox
+
 login_bas=1
-break_app = 0
+
+#
 def save_settings():
 	with open("settings.json", 'w') as set_prog_f:
 		set_prog_f.write(json.dumps(settings))
-
 
 #losd settings
 settings = {"recent_use": []}
@@ -59,7 +60,6 @@ def add_f():
 		if filename == antempxz:
 			alert('Этот файл уже добавлен!')
 			return 0
-
 	add_tree_l(filename)
 
 #
@@ -161,12 +161,11 @@ def stat_connekt():
 		except:
 			break
 
-
-
 #
 def SAVE():
 	pass
 
+#
 item_select = 0
 def tree_selection(event):
 	for selection in tree.selection():
@@ -174,6 +173,7 @@ def tree_selection(event):
 		item_select = selection
 		#print(tree.item(item_select)['text'])
 
+#
 def close_app():
 	save_settings()
 	root.destroy()
