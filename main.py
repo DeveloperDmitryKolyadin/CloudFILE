@@ -175,8 +175,12 @@ def Tab_selection_e(event):
 	global tab_selection
 	if tab_selection:
 		tab_selection = 0
+		Buttons['down_up_f']['text'] = 'Загрузить'
+
 	else:
 		tab_selection = 1
+		Buttons['down_up_f']['text'] = 'Скачать'
+
 	print(tab_selection)
 
 #
@@ -256,7 +260,7 @@ Buttons['rename_f'] = Button(frame3, text='Переименовать', command=
 
 Buttons['down_up_f'] = Button(frame3, text='Скачать из облака', command=down_up_f )
 Buttons['share_f'] = Button(frame3, text='Поделится', command=share_f )
-Buttons['del_f'] = Button(frame3, text='Удалить в облаке', command=del_f )
+Buttons['del_f'] = Button(frame3, text='Удалить', command=del_f )
 
 roww = 0
 coll = 0
