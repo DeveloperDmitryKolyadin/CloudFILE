@@ -51,6 +51,16 @@ def add_tree_l(rec):
 def  alert(msg_alert):
 	messagebox.showinfo(message=msg_alert)
 
+def f_this_space(text_w_probel):
+	bez_probela = ''
+	for jkjkjk in text_w_probel:
+		if jkjkjk == ' ':
+			bez_probela= bez_probela + '\ '
+		else:
+			bez_probela = bez_probela + jkjkjk
+	return bez_probela
+
+
 #
 def add_f():
 	if login_bas:
@@ -71,15 +81,6 @@ def rem_f():
 	settings['recent_use'].remove(tree.item(item_select)['values'][0])
 	tree.delete(item_select)
 	save_settings()
-
-def f_this_space(text_w_probel):
-	bez_probela = ''
-	for jkjkjk in text_w_probel:
-		if jkjkjk == ' ':
-			bez_probela= bez_probela + '\ '
-		else:
-			bez_probela = bez_probela + jkjkjk
-	return bez_probela
 
 #
 def rename_f():
@@ -102,22 +103,17 @@ def open_f():
 		print('open_f')
 
 #
-def down_f():
+def down_up_f():
 	if login_bas:
 		print('down_f')
 
 #
-def upl_f():
-	if login_bas:
-		print('upl_f')
-
-#
-def del_local_f():
+def del_f():
 	if login_bas:
 		print('del_local_f')
 
 #
-def del_cloud_f():
+def info_f():
 	if login_bas:
 		print('del_cloud_f')
 
@@ -172,6 +168,16 @@ def tree_selection(event):
 		global item_select
 		item_select = selection
 		#print(tree.item(item_select)['text'])
+
+#
+tab_selection = 1
+def Tab_selection_e(event):
+	global tab_selection
+	if tab_selection:
+		tab_selection = 0
+	else:
+		tab_selection = 1
+	print(tab_selection)
 
 #
 def close_app():
@@ -231,6 +237,7 @@ frame22.pack()
 
 n.add(frame21, text='Локально')
 n.add(frame22, text='Облако')
+n.bind(" <<NotebookTabChanged>>", Tab_selection_e)
 n.pack()
 
 frame2.pack()
@@ -238,20 +245,27 @@ frame2.pack()
 
 #f3
 frame3 = tk.Frame(master=root,borderwidth=5)
-tk.Button(frame3, text='Добавить файл', command=add_f ).grid(row=0, column=0, padx=10 , pady=2 , sticky="nsew")
-tk.Button(frame3, text='Убрать файл', command=rem_f ).grid(row=0, column=1, padx=10 , pady=2 , sticky="nsew")
+Buttons = {}
+Buttons['add_f'] = Button(frame3, text='Добавить файл', command=add_f )
+Buttons['info_f'] = Button(frame3, text='О файле', command=info_f )
+Buttons['rem_f'] = Button(frame3, text='Убрать файл', command=rem_f )
 
-tk.Button(frame3, text='Переименовать', command=rename_f ).grid(row=1, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Поделится', command=share_f ).grid(row=1, column=1, padx=10, pady=2 , sticky="nsew")
+Buttons['open_f'] = Button(frame3, text='Открыть', command=open_f )
+Buttons['edit_f'] = Button(frame3, text='Редактировать', command=edit_f )
+Buttons['rename_f'] = Button(frame3, text='Переименовать', command=rename_f )
 
-tk.Button(frame3, text='Редактировать', command=edit_f ).grid(row=2, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Открыть', command=open_f ).grid(row=2, column=1, padx=10, pady=2 , sticky="nsew")
+Buttons['down_up_f'] = Button(frame3, text='Скачать из облака', command=down_up_f )
+Buttons['share_f'] = Button(frame3, text='Поделится', command=share_f )
+Buttons['del_f'] = Button(frame3, text='Удалить в облаке', command=del_f )
 
-tk.Button(frame3, text='Скачать из облака', command=down_f ).grid(row=3, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Загрузить в облако', command=upl_f ).grid(row=3, column=1, padx=10 , pady=2 , sticky="nsew")
-
-tk.Button(frame3, text='Удалить локально', command=del_local_f ).grid(row=4, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Удалить в облаке', command=del_cloud_f ).grid(row=4, column=1, padx=10 , pady=2 , sticky="nsew")
+roww = 0
+coll = 0
+for but in Buttons:
+	Buttons[but].grid(row=roww, column=coll, padx=10 , pady=2 , sticky="nsew")
+	coll= coll +1
+	if coll==3:
+		coll = 0
+		roww = roww +1
 
 frame3.pack()
 
