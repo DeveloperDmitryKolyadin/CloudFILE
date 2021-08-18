@@ -10,184 +10,211 @@ from threading import Thread
 import requests as rq
 import json
 from tkinter import messagebox
-
+import webbrowser
 login_bas=1
 
 #
 def save_settings():
-	with open("settings.json", 'w') as set_prog_f:
-		set_prog_f.write(json.dumps(settings))
+    with open("settings.json", 'w') as set_prog_f:
+        set_prog_f.write(json.dumps(settings))
 
 #losd settings
 settings = {"recent_use": []}
 try:
-	with open("settings.json", 'r') as set_prog_f:
-		settings = json.loads(set_prog_f.read())
+    with open("settings.json", 'r') as set_prog_f:
+        settings = json.loads(set_prog_f.read())
 except:
-	save_settings()
+
+    save_settings()
 
 #
 def add_tree_l(rec):
-	if 1:
+    if 1:
 
-		settings['recent_use'].append(rec)
-		save_settings()
-		nbgb = ''
-		under = ''
-		for litera in rec:
-			if litera == '/':
-				under = nbgb + '/'
-				nbgb = ''
-			else:
-				nbgb = nbgb + litera
+        settings['recent_use'].append(rec)
+        save_settings()
+        nbgb = ''
+        under = ''
+        for litera in rec:
+            if litera == '/':
+                under = nbgb + '/'
+                nbgb = ''
+            else:
+                nbgb = nbgb + litera
 
-		if nbgb:
-			kjkj  = nbgb
-		else:
-			kjkj = under
-		rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
+        if nbgb:
+            kjkj  = nbgb
+        else:
+            kjkj = under
+        rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 
 #
 def  alert(msg_alert):
-	messagebox.showinfo(message=msg_alert)
+
+    messagebox.showinfo(message=msg_alert)
 
 def f_this_space(text_w_probel):
-	bez_probela = ''
-	for jkjkjk in text_w_probel:
-		if jkjkjk == ' ':
-			bez_probela= bez_probela + '\ '
-		else:
-			bez_probela = bez_probela + jkjkjk
-	return bez_probela
+    bez_probela = ''
+    for jkjkjk in text_w_probel:
+        if jkjkjk == ' ':
+            bez_probela= bez_probela + '\ '
+        else:
+            bez_probela = bez_probela + jkjkjk
+    return bez_probela
 
+#
+def obrtka(f_ober):
+    try:
+        f_ober()
+    except:
+        pass
+
+#
+def stat_connekt():
+    staaaatt['text'] = 'Подключение к серверу!'
+    staaaatt['bg'] = 'yellow'
+    time.sleep(5)
+    while 1:
+        try:
+            try:
+                r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
+                scodet = r.status_code
+                if scodet == 200:
+                    staaaatt['text'] = 'Связь с сервером есть!'
+                    staaaatt['bg'] = 'green'
+                else:
+                    staaaatt['text'] = 'Нет связи с сервером!'
+                    staaaatt['bg'] = 'red'
+            except:
+                staaaatt['text'] = 'Нет связи с сервером!'
+                staaaatt['bg'] = 'red'
+            time.sleep(5)
+        except:
+            break
+
+#
+def SAVE():
+    pass
+
+#
+item_select = 0
+def tree_selection(event):
+    for selection in tree.selection():
+        global item_select
+        item_select = selection
+        #print(tree.item(item_select)['text'])
+
+#
+tab_selection = 1
+def Tab_selection_e(event):
+    global tab_selection
+    if tab_selection:
+        tab_selection = 0
+        Buttons['down_up_f']['text'] = 'Загрузить'
+
+    else:
+        tab_selection = 1
+        Buttons['down_up_f']['text'] = 'Скачать'
+
+#
+def close_app():
+    save_settings()
+    root.destroy()
+    sys.exit(1)
+
+#
+def ask_cont(ask):
+	ask_how = messagebox.askyesno(
+	   message=ask,
+	   icon='question', title=ask, type='yesno')
+	return ask_how
+
+#КНОПКИ
 
 #
 def add_f():
-	if login_bas:
-		print('add_f')
-	filename = filedialog.askopenfilename()
-	for antempxz in settings['recent_use']:
-		if filename == antempxz:
-			alert('Этот файл уже добавлен!')
-			return 0
-	add_tree_l(filename)
+    if login_bas:
+        print('add_f')
+    filename = filedialog.askopenfilename()
+    if os.path.isfile(filename):
+        for antempxz in settings['recent_use']:
+            if filename == antempxz:
+                alert('Этот файл уже добавлен!')
+                return 0
+        add_tree_l(filename)
+    else:
+        alert('Кажется такой файл уже добавлен либо вы не выбрали файл!')
+
 
 #
 def rem_f():
-	if login_bas:
-		print('rem_f')
-	global item_select
-	#print(tree.item(item_select)['values'][0].encode(encoding='UTF-8',errors='strict'))
-	settings['recent_use'].remove(tree.item(item_select)['values'][0])
-	tree.delete(item_select)
-	save_settings()
+    if login_bas:
+        print('rem_f')
+    global item_select
+    #print(tree.item(item_select)['values'][0].encode(encoding='UTF-8',errors='strict'))
+    settings['recent_use'].remove(tree.item(item_select)['values'][0])
+    tree.delete(item_select)
+    save_settings()
 
 #
 def rename_f():
-	if login_bas:
-		print('rename_f')
+    if login_bas:
+        print('rename_f')
 
 #
 def share_f():
-	if login_bas:
-		print('share_f')
+    if login_bas:
+        print('share_f')
 
 #
 def edit_f():
 	if login_bas:
 		print('edit_f')
-
+	ask_cont('test')
 #
 def open_f():
-	if login_bas:
-		print('open_f')
+    if login_bas:
+        print('open_f')
+    if tab_selection:
+        alert('Мы пока не работаем с облаком(')
+    else:
+        if os.path.isfile(tree.item(item_select)['values'][0]):
+            webbrowser.open(tree.item(item_select)['values'][0])
+
 
 #
 def down_up_f():
-	if login_bas:
-		print('down_f')
+    if login_bas:
+        print('down_f')
 
 #
 def del_f():
 	if login_bas:
 		print('del_local_f')
+	if tab_selection:
+		alert('Мы пока не работаем с облаком(')
+	else:
+		ffffff = tree.item(item_select)['text']
+		if ask_cont(f'Вы действительно хотите удалить {ffffff}?'):
+			if os.path.isfile(tree.item(item_select)['values'][0]):
+				os.remove(tree.item(item_select)['values'][0])
+				rem_f()
 
 #
 def info_f():
-	if login_bas:
-		print('del_cloud_f')
+    if login_bas:
+        print('del_cloud_f')
 
 #
 def an_auth():
-	if login_bas:
-		print('an_auth')
+    if login_bas:
+        print('an_auth')
 
 #
 def settings_p():
-	if login_bas:
-		print('settings')
+    if login_bas:
+        print('settings')
 
-#
-def obrtka(f_ober):
-	try:
-		f_ober()
-	except:
-		pass
-
-#
-def stat_connekt():
-	staaaatt['text'] = 'Подключение к серверу!'
-	staaaatt['bg'] = 'yellow'
-	time.sleep(5)
-	while 1:
-		try:
-			try:
-				r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
-				scodet = r.status_code
-				if scodet == 200:
-					staaaatt['text'] = 'Связь с сервером есть!'
-					staaaatt['bg'] = 'green'
-				else:
-					staaaatt['text'] = 'Нет связи с сервером!'
-					staaaatt['bg'] = 'red'
-			except:
-				staaaatt['text'] = 'Нет связи с сервером!'
-				staaaatt['bg'] = 'red'
-			time.sleep(5)
-		except:
-			break
-
-#
-def SAVE():
-	pass
-
-#
-item_select = 0
-def tree_selection(event):
-	for selection in tree.selection():
-		global item_select
-		item_select = selection
-		#print(tree.item(item_select)['text'])
-
-#
-tab_selection = 1
-def Tab_selection_e(event):
-	global tab_selection
-	if tab_selection:
-		tab_selection = 0
-		Buttons['down_up_f']['text'] = 'Загрузить'
-
-	else:
-		tab_selection = 1
-		Buttons['down_up_f']['text'] = 'Скачать'
-
-	print(tab_selection)
-
-#
-def close_app():
-	save_settings()
-	root.destroy()
-	sys.exit(1)
 
 root = tk.Tk()
 root.geometry("500x500")
@@ -214,19 +241,19 @@ tree['columns'] = ('Путь')
 
 rtee=[]
 for rec in settings['recent_use']:
-	nbgb = ''
-	under = ''
-	for litera in rec:
-		if litera == '/':
-			under = nbgb + '/'
-			nbgb = ''
-		else:
-			nbgb = nbgb + litera
-	if nbgb:
-		kjkj  = nbgb
-	else:
-		kjkj = under
-	rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
+    nbgb = ''
+    under = ''
+    for litera in rec:
+        if litera == '/':
+            under = nbgb + '/'
+            nbgb = ''
+        else:
+            nbgb = nbgb + litera
+    if nbgb:
+        kjkj  = nbgb
+    else:
+        kjkj = under
+    rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 tree.bind("<<TreeviewSelect>>", tree_selection)
 
 tree.pack()
@@ -265,11 +292,11 @@ Buttons['del_f'] = Button(frame3, text='Удалить', command=del_f )
 roww = 0
 coll = 0
 for but in Buttons:
-	Buttons[but].grid(row=roww, column=coll, padx=10 , pady=2 , sticky="nsew")
-	coll= coll +1
-	if coll==3:
-		coll = 0
-		roww = roww +1
+    Buttons[but].grid(row=roww, column=coll, padx=10 , pady=2 , sticky="nsew")
+    coll= coll +1
+    if coll==3:
+        coll = 0
+        roww = roww +1
 
 frame3.pack()
 
