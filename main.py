@@ -29,24 +29,9 @@ except:
 
 #
 def add_tree_l(rec):
-	if 1:
-
-		settings['recent_use'].append(rec)
-		save_settings()
-		nbgb = ''
-		under = ''
-		for litera in rec:
-			if litera == '/':
-				under = nbgb + '/'
-				nbgb = ''
-			else:
-				nbgb = nbgb + litera
-
-		if nbgb:
-			kjkj  = nbgb
-		else:
-			kjkj = under
-		rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
+	settings['recent_use'].append(rec)
+	save_settings()
+	rtee.append(tree.insert('', 'end', text=os.path.basename(rec), values=(f_this_space(os.path.dirname(rec)))))
 
 #
 def  alert(msg_alert):
@@ -129,6 +114,58 @@ def ask_cont(ask):
 	   icon='question', title=ask, type='yesno')
 	return ask_how
 
+#
+htyjtyjtyjytyjyj = ''
+def dlg_dismiss (dlg, new_name_dlg):
+	global htyjtyjtyjytyjyj
+	htyjtyjtyjytyjyj = new_name_dlg.get()
+	dlg.grab_release()
+	dlg.destroy()
+
+def dlg_rename():
+	global htyjtyjtyjytyjyj
+	dlg = Toplevel(root)
+
+
+	w = root.winfo_width()
+	h = root.winfo_height()
+
+	stgg = 0
+	xcord = ''
+	ycord = ''
+	for kjkd in root.geometry():
+		if kjkd == '+':
+			stgg = stgg +1
+		elif stgg==1:
+			xcord = xcord + kjkd
+		elif stgg==2:
+			ycord = ycord + kjkd
+		else:
+			pass
+	xcord=int(xcord)
+	ycord=int(ycord)
+	dlg.title('Переименовать')
+	Label(dlg, text='Введите новое имя файла:').grid()
+	new_name_dlg = Entry(dlg)
+	new_name_dlg.grid()
+	ttk.Button(dlg, text="Переименовать", command= lambda: dlg_dismiss(dlg, new_name_dlg)).grid()
+	w = w//2
+	h = h//2
+	w1 = xcord + w
+	w2 = ycord + h
+
+	dlg.transient(root)   # dialog window is related to main
+	dlg.wait_visibility() # can't grab until window appears, so we wait
+	dlg.grab_set()        # ensure all input goes to our window
+
+	w11 = dlg.winfo_width() //2
+	w21 = dlg.winfo_height() //2
+	dlg.geometry('+{}+{}'.format(w1 - w11, w2 - w21))
+
+	dlg.protocol("WM_DELETE_WINDOW", lambda:  dlg_dismiss(dlg, new_name_dlg)) # intercept close button
+	dlg.wait_window()     # block until window is destroyed
+	return htyjtyjtyjytyjyj
+
 #КНОПКИ
 
 #
@@ -152,7 +189,7 @@ def rem_f():
 	global item_select
 	if item_select:
 		#print(tree.item(item_select)['values'][0].encode(encoding='UTF-8',errors='strict'))
-		settings['recent_use'].remove(tree.item(item_select)['values'][0])
+		settings['recent_use'].remove(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
 		tree.delete(item_select)
 		save_settings()
 
@@ -160,15 +197,34 @@ def rem_f():
 def rename_f():
 	if login_bas:
 		print('rename_f')
+
 	global item_select
-	if item_select:
-		alert('Недоступно, обращайтесь к @GunsForHand_s')
+	if tab_selection:
+		alert('Мы пока не работаем с облаком(')
+	else:
+		if item_select:
+			if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
+
+				temp_name = dlg_rename()
+				old_path = tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']
+				old_dir = tree.item(item_select)['values'][0] + '/'
+				os.rename(old_path, old_dir + temp_name)
+				iterdorsss = 0
+				for vremen in settings['recent_use']:
+					if vremen==old_path:
+						settings['recent_use'][iterdorsss] = old_dir + temp_name
+					iterdorsss = iterdorsss + 1
+
+				save_settings()
+				tree.delete(item_select)
+				rtee.append(tree.insert('', 'end', text=os.path.basename(old_dir + temp_name), values=(f_this_space(os.path.dirname(old_dir + temp_name)))))
 
 #
 def share_f():
 	if login_bas:
 		print('share_f')
 	alert('Мы пока не работаем с облаком(')
+
 #
 def edit_f():
 	if login_bas:
@@ -183,8 +239,8 @@ def open_f():
 		alert('Мы пока не работаем с облаком(')
 	else:
 		if item_select:
-			if os.path.isfile(tree.item(item_select)['values'][0]):
-				webbrowser.open(tree.item(item_select)['values'][0])
+			if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
+				webbrowser.open(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
 
 #
 def down_up_f():
@@ -202,8 +258,8 @@ def del_f():
 		if item_select:
 			ffffff = tree.item(item_select)['text']
 			if ask_cont(f'Вы действительно хотите удалить {ffffff}?'):
-				if os.path.isfile(tree.item(item_select)['values'][0]):
-					os.remove(tree.item(item_select)['values'][0])
+				if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
+					os.remove(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
 					rem_f()
 
 #
@@ -249,20 +305,10 @@ tree = ttk.Treeview(frame21)
 tree['columns'] = ('Путь')
 
 rtee=[]
+
 for rec in settings['recent_use']:
-	nbgb = ''
-	under = ''
-	for litera in rec:
-		if litera == '/':
-			under = nbgb + '/'
-			nbgb = ''
-		else:
-			nbgb = nbgb + litera
-	if nbgb:
-		kjkj  = nbgb
-	else:
-		kjkj = under
-	rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
+	if os.path.isfile(rec):
+		rtee.append(tree.insert('', 'end', text=os.path.basename(rec), values=(f_this_space(os.path.dirname(rec)))))
 tree.bind("<<TreeviewSelect>>", tree_selection)
 
 tree.pack()
@@ -318,6 +364,7 @@ staaaatt.pack(side=tk.LEFT)
 tk.Button(frame4, text='НАСТРОЙКИ', command=settings_p ).pack(side=tk.RIGHT)
 
 frame4.pack(fill=tk.X)
+
 
 time.sleep(1)
 Thread(target = lambda: obrtka(stat_connekt)).start()
