@@ -12,6 +12,8 @@ import json
 from tkinter import messagebox
 import webbrowser
 login_bas=1
+import time
+from hurry.filesize import size
 
 #
 def save_settings():
@@ -115,6 +117,11 @@ def ask_cont(ask):
 	return ask_how
 
 #
+def win_info_f_dismiss (win_info_f):
+	win_info_f.grab_release()
+	win_info_f.destroy()
+
+#
 htyjtyjtyjytyjyj = ''
 def dlg_dismiss (dlg, new_name_dlg):
 	global htyjtyjtyjytyjyj
@@ -165,6 +172,8 @@ def dlg_rename():
 	dlg.protocol("WM_DELETE_WINDOW", lambda:  dlg_dismiss(dlg, new_name_dlg)) # intercept close button
 	dlg.wait_window()     # block until window is destroyed
 	return htyjtyjtyjytyjyj
+
+
 
 #КНОПКИ
 
@@ -229,7 +238,8 @@ def share_f():
 def edit_f():
 	if login_bas:
 		print('edit_f')
-	alert('Недоступно, обращайтесь к @GunsForHand_s')
+	if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
+		alert('Недоступно, обращайтесь к @GunsForHand_s')
 
 #
 def open_f():
@@ -266,7 +276,57 @@ def del_f():
 def info_f():
 	if login_bas:
 		print('del_cloud_f')
-	alert('Недоступно, обращайтесь к @GunsForHand_s')
+	if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
+		win_info_f = Toplevel(root)
+
+		w = root.winfo_width()
+		h = root.winfo_height()
+		path = tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']
+		stgg = 0
+		xcord = ''
+		ycord = ''
+		for kjkd in root.geometry():
+			if kjkd == '+':
+				stgg = stgg +1
+			elif stgg==1:
+				xcord = xcord + kjkd
+			elif stgg==2:
+				ycord = ycord + kjkd
+			else:
+				pass
+		xcord=int(xcord)
+		ycord=int(ycord)
+		win_info_f.title('О файле: '+tree.item(item_select)['text'])
+
+
+		Label(win_info_f, text='Время последнего доступа к файлу:').grid( sticky='nsew')
+		Label(win_info_f, text=time.ctime(os.path.getatime(path)) ).grid()
+
+		Label(win_info_f, text='Время последнего изменения файла:').grid()
+		Label(win_info_f, text=time.ctime(os.path.getmtime(path))  ).grid()
+
+		Label(win_info_f, text='Время создания файла:').grid()
+		Label(win_info_f, text= time.ctime(os.path.getctime(path)) ).grid()
+
+		Label(win_info_f, text='Размер файла:').grid()
+		Label(win_info_f, text= size(os.path.getsize(path) )).grid()
+
+
+		w = w//2
+		h = h//2
+		w1 = xcord + w
+		w2 = ycord + h
+
+		win_info_f.transient(root)   # dialog window is related to main
+		win_info_f.wait_visibility() # can't grab until window appears, so we wait
+		win_info_f.grab_set()        # ensure all input goes to our window
+
+		w11 = win_info_f.winfo_width() //2
+		w21 = win_info_f.winfo_height() //2
+		win_info_f.geometry('+{}+{}'.format(w1 - w11, w2 - w21))
+
+		win_info_f.protocol("WM_DELETE_WINDOW", lambda:  win_info_f_dismiss(win_info_f)) # intercept close button
+		win_info_f.wait_window()     # block until window is destroyed
 
 #
 def an_auth():
