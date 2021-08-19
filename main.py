@@ -1,5 +1,5 @@
 import boto3
-import os
+import os, sys
 from tkinter import *
 import tkinter as tk
 import codecs
@@ -9,22 +9,25 @@ import time
 from threading import Thread
 import requests as rq
 import json
-
+from tkinter import messagebox
+import webbrowser
 login_bas=1
-
-#losd settings
-settings = {"recent_use": []}
-with open("settings.json", 'r') as set_prog_f:
-	try:
-		settings = json.loads(set_prog_f.read())
-	except:
-		save_settings()
 
 #
 def save_settings():
 	with open("settings.json", 'w') as set_prog_f:
 		set_prog_f.write(json.dumps(settings))
 
+#losd settings
+settings = {"recent_use": []}
+try:
+	with open("settings.json", 'r') as set_prog_f:
+		settings = json.loads(set_prog_f.read())
+except:
+
+	save_settings()
+
+#
 def add_tree_l(rec):
 	if 1:
 
@@ -38,82 +41,33 @@ def add_tree_l(rec):
 				nbgb = ''
 			else:
 				nbgb = nbgb + litera
+
 		if nbgb:
 			kjkj  = nbgb
 		else:
 			kjkj = under
-		rtee.append(tree.insert('', 'end', text=kjkj, values=(rec)))
-
-
-#
-def add_f():
-	if login_bas:
-		print('add_f')
-	filename = filedialog.askopenfilename()
-
-	add_tree_l(filename)
+		rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 
 #
-def rem_f():
-	if login_bas:
-		print('rem_f')
-	global item_select
-	settings['recent_use'].remove(tree.item(item_select)['values'][0])
-	tree.delete(item_select)
-	save_settings()
+def  alert(msg_alert):
 
+	messagebox.showinfo(message=msg_alert)
 
-#
-def rename_f():
-	if login_bas:
-		print('rename_f')
-
-#
-def share_f():
-	if login_bas:
-		print('share_f')
+def f_this_space(text_w_probel):
+	bez_probela = ''
+	for jkjkjk in text_w_probel:
+		if jkjkjk == ' ':
+			bez_probela= bez_probela + '\ '
+		else:
+			bez_probela = bez_probela + jkjkjk
+	return bez_probela
 
 #
-def edit_f():
-	if login_bas:
-		print('edit_f')
-
-#
-def open_f():
-	if login_bas:
-		print('open_f')
-
-#
-def down_f():
-	if login_bas:
-		print('down_f')
-
-#
-def upl_f():
-	if login_bas:
-		print('upl_f')
-
-#
-def del_local_f():
-	if login_bas:
-		print('del_local_f')
-
-#
-def del_cloud_f():
-	if login_bas:
-		print('del_cloud_f')
-
-#
-def an_auth():
-	if login_bas:
-		print('an_auth')
-
-#
-def settings_p():
-	if login_bas:
-		print('settings')
-
-
+def obrtka(f_ober):
+	try:
+		f_ober()
+	except:
+		pass
 
 #
 def stat_connekt():
@@ -121,8 +75,7 @@ def stat_connekt():
 	staaaatt['bg'] = 'yellow'
 	time.sleep(5)
 	while 1:
-
-		if root.geometry():
+		try:
 			try:
 				r = rq.get('https://functions.yandexcloud.net/d4ek6eurb4ek7b51tl99')
 				scodet = r.status_code
@@ -135,21 +88,141 @@ def stat_connekt():
 			except:
 				staaaatt['text'] = 'Нет связи с сервером!'
 				staaaatt['bg'] = 'red'
-
-
 			time.sleep(5)
-
+		except:
+			break
 
 #
 def SAVE():
 	pass
 
+#
 item_select = 0
 def tree_selection(event):
 	for selection in tree.selection():
 		global item_select
 		item_select = selection
 		#print(tree.item(item_select)['text'])
+
+#
+tab_selection = 1
+def Tab_selection_e(event):
+	global tab_selection
+	if tab_selection:
+		tab_selection = 0
+		Buttons['down_up_f']['text'] = 'Загрузить'
+
+	else:
+		tab_selection = 1
+		Buttons['down_up_f']['text'] = 'Скачать'
+
+#
+def close_app():
+	save_settings()
+	root.destroy()
+	sys.exit(1)
+
+#
+def ask_cont(ask):
+	ask_how = messagebox.askyesno(
+	   message=ask,
+	   icon='question', title=ask, type='yesno')
+	return ask_how
+
+#КНОПКИ
+
+#
+def add_f():
+	if login_bas:
+		print('add_f')
+	filename = filedialog.askopenfilename()
+	if os.path.isfile(filename):
+		for antempxz in settings['recent_use']:
+			if filename == antempxz:
+				alert('Этот файл уже добавлен!')
+				return 0
+		add_tree_l(filename)
+	else:
+		alert('Кажется такой файл уже добавлен либо вы не выбрали файл!')
+
+#
+def rem_f():
+	if login_bas:
+		print('rem_f')
+	global item_select
+	if item_select:
+		#print(tree.item(item_select)['values'][0].encode(encoding='UTF-8',errors='strict'))
+		settings['recent_use'].remove(tree.item(item_select)['values'][0])
+		tree.delete(item_select)
+		save_settings()
+
+#
+def rename_f():
+	if login_bas:
+		print('rename_f')
+	global item_select
+	if item_select:
+		alert('Недоступно, обращайтесь к @GunsForHand_s')
+
+#
+def share_f():
+	if login_bas:
+		print('share_f')
+	alert('Мы пока не работаем с облаком(')
+#
+def edit_f():
+	if login_bas:
+		print('edit_f')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
+
+#
+def open_f():
+	if login_bas:
+		print('open_f')
+	if tab_selection:
+		alert('Мы пока не работаем с облаком(')
+	else:
+		if item_select:
+			if os.path.isfile(tree.item(item_select)['values'][0]):
+				webbrowser.open(tree.item(item_select)['values'][0])
+
+#
+def down_up_f():
+	if login_bas:
+		print('down_f')
+	alert('Мы пока не работаем с облаком(')
+
+#
+def del_f():
+	if login_bas:
+		print('del_local_f')
+	if tab_selection:
+		alert('Мы пока не работаем с облаком(')
+	else:
+		if item_select:
+			ffffff = tree.item(item_select)['text']
+			if ask_cont(f'Вы действительно хотите удалить {ffffff}?'):
+				if os.path.isfile(tree.item(item_select)['values'][0]):
+					os.remove(tree.item(item_select)['values'][0])
+					rem_f()
+
+#
+def info_f():
+	if login_bas:
+		print('del_cloud_f')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
+
+#
+def an_auth():
+	if login_bas:
+		print('an_auth')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
+
+#
+def settings_p():
+	if login_bas:
+		print('settings')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
 
 
 root = tk.Tk()
@@ -189,7 +262,7 @@ for rec in settings['recent_use']:
 		kjkj  = nbgb
 	else:
 		kjkj = under
-	rtee.append(tree.insert('', 'end', text=kjkj, values=(rec)))
+	rtee.append(tree.insert('', 'end', text=kjkj, values=(f_this_space(rec))))
 tree.bind("<<TreeviewSelect>>", tree_selection)
 
 tree.pack()
@@ -204,6 +277,7 @@ frame22.pack()
 
 n.add(frame21, text='Локально')
 n.add(frame22, text='Облако')
+n.bind(" <<NotebookTabChanged>>", Tab_selection_e)
 n.pack()
 
 frame2.pack()
@@ -211,20 +285,27 @@ frame2.pack()
 
 #f3
 frame3 = tk.Frame(master=root,borderwidth=5)
-tk.Button(frame3, text='Добавить файл', command=add_f ).grid(row=0, column=0, padx=10 , pady=2 , sticky="nsew")
-tk.Button(frame3, text='Убрать файл', command=rem_f ).grid(row=0, column=1, padx=10 , pady=2 , sticky="nsew")
+Buttons = {}
+Buttons['add_f'] = Button(frame3, text='Добавить файл', command=add_f )
+Buttons['info_f'] = Button(frame3, text='О файле', command=info_f )
+Buttons['rem_f'] = Button(frame3, text='Убрать файл', command=rem_f )
 
-tk.Button(frame3, text='Переименовать', command=rename_f ).grid(row=1, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Поделится', command=share_f ).grid(row=1, column=1, padx=10, pady=2 , sticky="nsew")
+Buttons['open_f'] = Button(frame3, text='Открыть', command=open_f )
+Buttons['edit_f'] = Button(frame3, text='Редактировать', command=edit_f )
+Buttons['rename_f'] = Button(frame3, text='Переименовать', command=rename_f )
 
-tk.Button(frame3, text='Редактировать', command=edit_f ).grid(row=2, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Открыть', command=open_f ).grid(row=2, column=1, padx=10, pady=2 , sticky="nsew")
+Buttons['down_up_f'] = Button(frame3, text='Скачать из облака', command=down_up_f )
+Buttons['share_f'] = Button(frame3, text='Поделится', command=share_f )
+Buttons['del_f'] = Button(frame3, text='Удалить', command=del_f )
 
-tk.Button(frame3, text='Скачать из облака', command=down_f ).grid(row=3, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Загрузить в облако', command=upl_f ).grid(row=3, column=1, padx=10 , pady=2 , sticky="nsew")
-
-tk.Button(frame3, text='Удалить локально', command=del_local_f ).grid(row=4, column=0, padx=10, pady=2 , sticky="nsew")
-tk.Button(frame3, text='Удалить в облаке', command=del_cloud_f ).grid(row=4, column=1, padx=10 , pady=2 , sticky="nsew")
+roww = 0
+coll = 0
+for but in Buttons:
+	Buttons[but].grid(row=roww, column=coll, padx=10 , pady=2 , sticky="nsew")
+	coll= coll +1
+	if coll==3:
+		coll = 0
+		roww = roww +1
 
 frame3.pack()
 
@@ -234,16 +315,12 @@ frame4 = tk.Frame(master=root,borderwidth=5)
 
 staaaatt = Label(master=frame4, text="Подключение к серверу!", bg='yellow')
 staaaatt.pack(side=tk.LEFT)
-tk.Button(frame4, text='НАСТРОЙКИ', command=settings ).pack(side=tk.RIGHT)
+tk.Button(frame4, text='НАСТРОЙКИ', command=settings_p ).pack(side=tk.RIGHT)
 
 frame4.pack(fill=tk.X)
 
-
-
-
 time.sleep(1)
-Thread(target=stat_connekt).start()
+Thread(target = lambda: obrtka(stat_connekt)).start()
 
-
-
+root.protocol("WM_DELETE_WINDOW", close_app)
 root.mainloop()
