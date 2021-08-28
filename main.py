@@ -227,6 +227,8 @@ def rename_f():
 				save_settings()
 				tree.delete(item_select)
 				rtee.append(tree.insert('', 'end', text=os.path.basename(old_dir + temp_name), values=(f_this_space(os.path.dirname(old_dir + temp_name)))))
+			else:
+				alert('Файл был удалён или перемещён')
 
 #
 def share_f():
@@ -240,6 +242,8 @@ def edit_f():
 		print('edit_f')
 	if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
 		alert('Недоступно, обращайтесь к @GunsForHand_s')
+	else:
+		alert('Файл был удалён или перемещён')
 
 #
 def open_f():
@@ -251,6 +255,8 @@ def open_f():
 		if item_select:
 			if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
 				webbrowser.open(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
+			else:
+				alert('Файл был удалён или перемещён')
 
 #
 def down_up_f():
@@ -271,6 +277,8 @@ def del_f():
 				if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
 					os.remove(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
 					rem_f()
+				else:
+					alert('Файл был удалён или перемещён')
 
 #
 def info_f():
@@ -327,6 +335,27 @@ def info_f():
 
 		win_info_f.protocol("WM_DELETE_WINDOW", lambda:  win_info_f_dismiss(win_info_f)) # intercept close button
 		win_info_f.wait_window()     # block until window is destroyed
+	else:
+		alert('Файл был удалён или перемещён')
+
+#
+def replace_f():
+	if login_bas:
+		print('an_auth')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
+
+#
+def create_f():
+	if login_bas:
+		print('an_auth')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
+
+#
+def create_dir():
+	if login_bas:
+		print('an_auth')
+	alert('Недоступно, обращайтесь к @GunsForHand_s')
+	print(root.geometry())
 
 #
 def an_auth():
@@ -342,7 +371,7 @@ def settings_p():
 
 
 root = tk.Tk()
-root.geometry("500x500")
+root.geometry("500x475")
 root.title('CloudFILE')
 
 
@@ -398,10 +427,14 @@ Buttons['rem_f'] = Button(frame3, text='Убрать файл', command=rem_f )
 
 Buttons['open_f'] = Button(frame3, text='Открыть', command=open_f )
 Buttons['edit_f'] = Button(frame3, text='Редактировать', command=edit_f )
+Buttons['down_up_f'] = Button(frame3, text='Скачать из облака', command=down_up_f )
+
+Buttons['replace_f'] = Button(frame3, text='Переместить', command=replace_f )
+Buttons['share_f'] = Button(frame3, text='Поделится', command=share_f )
 Buttons['rename_f'] = Button(frame3, text='Переименовать', command=rename_f )
 
-Buttons['down_up_f'] = Button(frame3, text='Скачать из облака', command=down_up_f )
-Buttons['share_f'] = Button(frame3, text='Поделится', command=share_f )
+Buttons['create_f'] = Button(frame3, text='Создать файл', command=create_f )
+Buttons['create_dir'] = Button(frame3, text='Создать папку', command=create_dir )
 Buttons['del_f'] = Button(frame3, text='Удалить', command=del_f )
 
 roww = 0
