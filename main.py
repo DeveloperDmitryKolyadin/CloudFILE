@@ -26,7 +26,6 @@ try:
 	with open("settings.json", 'r') as set_prog_f:
 		settings = json.loads(set_prog_f.read())
 except:
-
 	save_settings()
 
 #
@@ -37,7 +36,6 @@ def add_tree_l(rec):
 
 #
 def  alert(msg_alert):
-
 	messagebox.showinfo(message=msg_alert)
 
 def f_this_space(text_w_probel):
@@ -53,8 +51,9 @@ def f_this_space(text_w_probel):
 def obrtka(f_ober):
 	try:
 		f_ober()
-	except:
-		pass
+	except BaseException as err:
+		print(err)
+		print(traceback.format_exc())
 
 #
 def stat_connekt():
