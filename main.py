@@ -14,11 +14,8 @@ import webbrowser
 login_bas=1
 import time
 from hurry.filesize import size
-import tkinter as tk
-from tkinter import *
 from tkinter.ttk import Combobox
 from tkinter import colorchooser
-from tkinter import filedialog
 from tkinter.filedialog import asksaveasfile
 import tkinter.messagebox
 
@@ -427,8 +424,19 @@ def replace_f():
 #
 def create_f():
 	if login_bas:
-		print('an_auth')
-	alert('Недоступно, обращайтесь к @GunsForHand_s')
+		print('create_f')
+	newfile = filedialog.asksaveasfilename()
+	my_file = open(newfile, "w")
+	my_file.close()
+	if os.path.isfile(newfile):
+		for antempxz in settings['recent_use']:
+			if newfile == antempxz:
+				alert('Этот файл уже добавлен!')
+				return 0
+		add_tree_l(newfile)
+	else:
+		alert('Кажется такой файл уже добавлен либо вы не выбрали файл!')
+	#alert('Недоступно, обращайтесь к @GunsForHand_s')
 
 #
 def create_dir():
