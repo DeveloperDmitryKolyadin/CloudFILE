@@ -14,6 +14,84 @@ import webbrowser
 login_bas=1
 import time
 from hurry.filesize import size
+from tkinter.ttk import Combobox
+from tkinter import colorchooser
+from tkinter.filedialog import asksaveasfile
+import tkinter.messagebox
+
+def Save_f(path, text_for_save):
+	filename1 = path
+	file = open(filename1, 'w', encoding='utf8')
+	file.write(text_for_save)
+	file.close()
+
+def window_text(path):
+	if 1:
+		if 1:
+			if 1:
+				newWin = tk.Tk()
+
+				screen_w = 800#newWin.winfo_screenwidth()
+				screen_h = 600#newWin.winfo_screenheight()
+
+				w = screen_w-15
+				h = screen_h-85
+
+				resolution = str(w)+'x'+str(h)
+
+				newWin.geometry(resolution)
+
+				menu = Menu(newWin)
+				new_item = Menu(menu)
+				new_item.add_command(label='Сохранить', command=lambda: Save_f(path, message_text.get("1.0", tk.END)))
+				new_item.add_command(label='Выйти', command=lambda: newWin.destroy())
+				menu.add_cascade(label='Файл', menu=new_item)
+				newWin.config(menu=menu)
+
+				message_text = Text(newWin, bg='light cyan', fg='black')
+				message_text.place(relx=.5, rely=.5, anchor="c", height=h-100, width=w-30)
+				if 1:
+					filename1 = path
+					file1 = open(filename1, 'r', encoding='utf8')
+
+
+
+					for l in file1:
+						message_text.insert(tk.END, l)
+
+					file1.close()
+					fileopen = Label(text=str(filename1), bg='yellow')
+					fileopen.grid(column=1, row=1)
+					btn_cls = tk.Button(text="Х", command=lambda: btn_cls_func())
+					btn_cls.grid(column=3, row=1)
+
+					def btn_cls_func():
+						win_ext = Tk()
+
+						label_ext = tk.Label(win_ext, text='Вы действительно хотите выйти?')
+						label_ext.pack()
+						frame = Frame(win_ext)
+						yes_ext = tk.Button(frame,text='Да', command=lambda:ext()).grid(padx=10, column=1, row=0 , pady=2 , sticky="nsew")
+						no_ext = tk.Button(frame,text='Нет', command=lambda:win_ext.destroy()).grid( row=0, padx=10 , pady=2 , sticky="nsew")
+						frame.pack()
+
+						def ext():
+							btn_cls.destroy()
+
+							try:
+								Save_f(path, message_text.get("1.0", tk.END))
+							except AttributeError as error_data:
+								pass
+
+							fileopen.destroy()
+							win_ext.destroy()
+							message_text.delete('1.0', tk.END)
+
+
+
+
+
+
 
 #
 def save_settings():
@@ -127,6 +205,49 @@ def dlg_dismiss (dlg, new_name_dlg):
 	htyjtyjtyjytyjyj = new_name_dlg.get()
 	dlg.grab_release()
 	dlg.destroy()
+def dlg_cr_dir():
+	global htyjtyjtyjytyjyj
+	dlg = Toplevel(root)
+
+
+	w = root.winfo_width()
+	h = root.winfo_height()
+
+	stgg = 0
+	xcord = ''
+	ycord = ''
+	for kjkd in root.geometry():
+		if kjkd == '+':
+			stgg = stgg +1
+		elif stgg==1:
+			xcord = xcord + kjkd
+		elif stgg==2:
+			ycord = ycord + kjkd
+		else:
+			pass
+	xcord=int(xcord)
+	ycord=int(ycord)
+	dlg.title('Cоздать директорию...')
+	Label(dlg, text='Введите имя директории:').grid()
+	new_name_dlg = Entry(dlg)
+	new_name_dlg.grid()
+	ttk.Button(dlg, text="Создать", command= lambda: dlg_dismiss(dlg, new_name_dlg)).grid()
+	w = w//2
+	h = h//2
+	w1 = xcord + w
+	w2 = ycord + h
+
+	dlg.transient(root)   # dialog window is related to main
+	dlg.wait_visibility() # can't grab until window appears, so we wait
+	dlg.grab_set()        # ensure all input goes to our window
+
+	w11 = dlg.winfo_width() //2
+	w21 = dlg.winfo_height() //2
+	dlg.geometry('+{}+{}'.format(w1 - w11, w2 - w21))
+
+	dlg.protocol("WM_DELETE_WINDOW", lambda:  dlg_dismiss(dlg, new_name_dlg)) # intercept close button
+	dlg.wait_window()     # block until window is destroyed
+	return htyjtyjtyjytyjyj
 
 def dlg_rename():
 	global htyjtyjtyjytyjyj
@@ -240,7 +361,7 @@ def edit_f():
 	if login_bas:
 		print('edit_f')
 	if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
-		alert('Недоступно, обращайтесь к @GunsForHand_s')
+		window_text(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
 	else:
 		alert('Файл был удалён или перемещён')
 
@@ -340,21 +461,56 @@ def info_f():
 #
 def replace_f():
 	if login_bas:
-		print('an_auth')
-	alert('Недоступно, обращайтесь к @GunsForHand_s')
+		print('replace_f')
+	if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
+		alert('Выберите в какую папку переместить файл')
+		dir = filedialog.askdirectory(mustexist=1, title='Куда переместить файл')
+		os.replace(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'], dir+ '/' + tree.item(item_select)['text'])
+
+		old_path = tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']
+		old_dir = tree.item(item_select)['values'][0] + '/'
+		iterdorsss = 0
+		for vremen in settings['recent_use']:
+			if vremen==old_path:
+				settings['recent_use'][iterdorsss] = dir +'/' + tree.item(item_select)['text']
+			iterdorsss = iterdorsss + 1
+
+		save_settings()
+		f_name =tree.item(item_select)['text']
+		tree.delete(item_select)
+		rec = dir +'/' + f_name
+		rtee.append(tree.insert('', 'end', text=os.path.basename(rec), values=(f_this_space(os.path.dirname(rec)))))
+	else:
+		alert('Файл был удалён или перемещён')
+
 
 #
 def create_f():
 	if login_bas:
-		print('an_auth')
-	alert('Недоступно, обращайтесь к @GunsForHand_s')
+		print('create_f')
+	newfile = filedialog.asksaveasfilename()
+	my_file = open(newfile, "w")
+	my_file.close()
+	if os.path.isfile(newfile):
+		for antempxz in settings['recent_use']:
+			if newfile == antempxz:
+				alert('Этот файл уже добавлен!')
+				return 0
+		add_tree_l(newfile)
+	else:
+		alert('Кажется такой файл уже добавлен либо вы не выбрали файл!')
+	#alert('Недоступно, обращайтесь к @GunsForHand_s')
 
 #
 def create_dir():
 	if login_bas:
-		print('an_auth')
-	alert('Недоступно, обращайтесь к @GunsForHand_s')
-	print(root.geometry())
+		print('create_dir')
+	alert('Выберите расположение новой директории')
+	dir_path = filedialog.askdirectory(mustexist=False, title='Выберите расположение новой директории')
+	dirname = dlg_cr_dir()
+	os.mkdir(dir_path+'/' +dirname)
+	alert('Директория созданна - '+dir_path+'/'+dirname)
+
 
 #
 def an_auth():
