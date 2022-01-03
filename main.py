@@ -14,6 +14,87 @@ import webbrowser
 login_bas=1
 import time
 from hurry.filesize import size
+import tkinter as tk
+from tkinter import *
+from tkinter.ttk import Combobox
+from tkinter import colorchooser
+from tkinter import filedialog
+from tkinter.filedialog import asksaveasfile
+import tkinter.messagebox
+
+def Save_f(path, text_for_save):
+	filename1 = path
+	file = open(filename1, 'w', encoding='utf8')
+	file.write(text_for_save)
+	file.close()
+
+def window_text(path):
+	if 1:
+		if 1:
+			if 1:
+				newWin = tk.Tk()
+
+				screen_w = 800#newWin.winfo_screenwidth()
+				screen_h = 600#newWin.winfo_screenheight()
+
+				w = screen_w-15
+				h = screen_h-85
+
+				resolution = str(w)+'x'+str(h)
+
+				newWin.geometry(resolution)
+
+				menu = Menu(newWin)
+				new_item = Menu(menu)
+				new_item.add_command(label='Сохранить', command=lambda: Save_f(path, message_text.get("1.0", tk.END)))
+				new_item.add_command(label='Выйти', command=lambda: newWin.destroy())
+				menu.add_cascade(label='Файл', menu=new_item)
+				newWin.config(menu=menu)
+
+				message_text = Text(newWin, bg='light cyan', fg='black')
+				message_text.place(relx=.5, rely=.5, anchor="c", height=h-100, width=w-30)
+				if 1:
+					filename1 = path
+					file1 = open(filename1, 'r', encoding='utf8')
+
+
+
+					for l in file1:
+						message_text.insert(tk.END, l)
+
+					file1.close()
+					fileopen = Label(text=str(filename1), bg='yellow')
+					fileopen.grid(column=1, row=1)
+					btn_cls = tk.Button(text="Х", command=lambda: btn_cls_func())
+					btn_cls.grid(column=3, row=1)
+
+					def btn_cls_func():
+						win_ext = Tk()
+
+						label_ext = tk.Label(win_ext, text='Вы действительно хотите выйти?')
+						label_ext.pack()
+						frame = Frame(win_ext)
+						yes_ext = tk.Button(frame,text='Да', command=lambda:ext()).grid(padx=10, column=1, row=0 , pady=2 , sticky="nsew")
+						no_ext = tk.Button(frame,text='Нет', command=lambda:win_ext.destroy()).grid( row=0, padx=10 , pady=2 , sticky="nsew")
+						frame.pack()
+
+						def ext():
+							btn_cls.destroy()
+
+							try:
+								Save_f(path, message_text.get("1.0", tk.END))
+							except AttributeError as error_data:
+								pass
+
+							fileopen.destroy()
+							win_ext.destroy()
+							message_text.delete('1.0', tk.END)
+
+
+
+
+
+
 
 #
 def save_settings():
@@ -240,7 +321,7 @@ def edit_f():
 	if login_bas:
 		print('edit_f')
 	if os.path.isfile(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text']):
-		alert('Недоступно, обращайтесь к @GunsForHand_s')
+		window_text(tree.item(item_select)['values'][0] + '/' + tree.item(item_select)['text'])
 	else:
 		alert('Файл был удалён или перемещён')
 
